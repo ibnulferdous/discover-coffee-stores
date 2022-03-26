@@ -33,13 +33,7 @@ export function getStaticProps({ params }) {
 }
 
 const coffeeStore = ({ coffeeStoreData }) => {
-  const router = useRouter();
-
   console.log(coffeeStoreData);
-
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div>
