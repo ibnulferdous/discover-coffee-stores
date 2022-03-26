@@ -7,34 +7,7 @@ import { Button, Container, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import coffeeStoresData from "../../data/coffee-stores.json";
 
-export function getStaticPaths() {
-  const paths = coffeeStoresData.map((coffeeStoreData) => {
-    return {
-      params: {
-        id: coffeeStoreData.id.toString(),
-      },
-    };
-  });
-
-  return {
-    paths,
-    fallback: true, // false or 'blocking'
-  };
-}
-
-export function getStaticProps({ params }) {
-  return {
-    props: {
-      coffeeStoreData: coffeeStoresData.find((coffeeStore) => {
-        return coffeeStore.id.toString() === params.id;
-      }),
-    },
-  };
-}
-
 const coffeeStore = ({ coffeeStoreData }) => {
-  console.log(coffeeStoreData);
-
   return (
     <div>
       <Head>
@@ -79,5 +52,30 @@ const coffeeStore = ({ coffeeStoreData }) => {
     </div>
   );
 };
+
+export function getStaticPaths() {
+  const paths = coffeeStoresData.map((singleStore) => {
+    return {
+      params: {
+        id: singleStore.id.toString(),
+      },
+    };
+  });
+
+  return {
+    paths,
+    fallback: "blocking", // false or 'blocking'
+  };
+}
+
+export function getStaticProps({ params }) {
+  return {
+    props: {
+      coffeeStoreData: coffeeStoresData.find((coffeeStore) => {
+        return coffeeStore.id.toString() === params.id;
+      }),
+    },
+  };
+}
 
 export default coffeeStore;
