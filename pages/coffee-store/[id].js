@@ -8,10 +8,10 @@ import { Box } from "@mui/system";
 import coffeeStoresData from "../../data/coffee-stores.json";
 
 export function getStaticPaths() {
-  const paths = coffeeStoresData.map((coffeeStore) => {
+  const paths = coffeeStoresData.map((coffeeStoreData) => {
     return {
       params: {
-        id: coffeeStore.id.toString(),
+        id: coffeeStoreData.id.toString(),
       },
     };
   });
