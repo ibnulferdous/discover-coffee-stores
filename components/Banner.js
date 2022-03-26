@@ -32,12 +32,13 @@ const Banner = ({ buttonText, handleOnClick }) => {
             {buttonText}
           </Button>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} sx={{ textAlign: "center" }}>
           <Image
             src="/static/coffee-glass.png"
-            width={1000}
-            height={998}
+            width={600}
+            height={599}
             alt="Coffee Glass"
+            priority
           />
         </Grid>
       </Grid>

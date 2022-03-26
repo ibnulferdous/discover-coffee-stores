@@ -1,12 +1,23 @@
-import { Container, Typography } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
-import Banner from "../components/Banner";
-import Card from "../components/Card";
-import CardListsContainer from "../components/CardListsContainer";
+
 import styles from "../styles/Home.module.css";
 
-export default function Home() {
+import { Container } from "@mui/material";
+import Banner from "../components/Banner";
+import CardListsContainer from "../components/CardListsContainer";
+
+import coffeeStoresData from "../data/coffee-stores.json";
+
+export async function getStaticProps(context) {
+  return {
+    props: {
+      coffeeStoresData,
+    },
+  };
+}
+
+export default function Home({ data }) {
   const handleOnBannerBtnClick = () => {
     console.log("Hi, banner button");
   };
@@ -26,16 +37,7 @@ export default function Home() {
             handleOnClick={handleOnBannerBtnClick}
           ></Banner>
 
-          <Typography
-            variant="h3"
-            marginBottom="50px"
-            component="h2"
-            sx={{ fontWeight: 700 }}
-            align="center"
-          >
-            Toronto Stores
-          </Typography>
-          <CardListsContainer />
+          <CardListsContainer coffeeStoresData={coffeeStoresData} />
         </Container>
       </main>
     </div>

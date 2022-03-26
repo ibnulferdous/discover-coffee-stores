@@ -15,15 +15,12 @@ const Card = (props) => {
               <Typography variant="h6" gutterBottom component="div">
                 {props.name}
               </Typography>
-              <Box
-                sx={{ width: "100%", height: "250px", position: "relative" }}
-              >
+              <Box>
                 <Image
                   src={props.imgUrl}
                   alt={props.storeName}
-                  layout="fill"
-                  objectFit="cover"
-                  objectPosition="center"
+                  width="400px"
+                  height="300px"
                 />
               </Box>
             </Paper>

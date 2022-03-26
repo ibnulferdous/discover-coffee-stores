@@ -1,11 +1,21 @@
+import { Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Card from "./Card";
 
-import data from "../data/coffee-stores.json";
-
-const CardListsContainer = () => {
+const CardListsContainer = ({ coffeeStoresData }) => {
   return (
     <>
+      {coffeeStoresData.length > 0 && (
+        <Typography
+          variant="h3"
+          marginBottom="50px"
+          component="h2"
+          sx={{ fontWeight: 700 }}
+          align="center"
+        >
+          Toronto Stores
+        </Typography>
+      )}
       <Grid
         container
         spacing={3}
@@ -13,7 +23,7 @@ const CardListsContainer = () => {
           marginBottom: "100px",
         }}
       >
-        {data.map((coffeeStore) => (
+        {coffeeStoresData.map((coffeeStore) => (
           <Card
             key={coffeeStore.id}
             name={coffeeStore.name}
