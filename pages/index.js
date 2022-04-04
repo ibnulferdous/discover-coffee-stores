@@ -3,13 +3,17 @@ import Image from "next/image";
 
 import styles from "../styles/Home.module.css";
 
-import { Container } from "@mui/material";
+import { Container, Grid, Typography } from "@mui/material";
 import Banner from "../components/Banner";
 import CardListsContainer from "../components/CardListsContainer";
-
-import coffeeStoresData from "../data/coffee-stores.json";
+import { fetchCoffeeStores } from "../lib/coffee-stores";
+import useTrackLocation from "../hooks/useTrackLocation";
+import { useEffect, useState } from "react";
+import Card from "../components/Card";
 
 export async function getStaticProps(context) {
+  const coffeeStoresData = await fetchCoffeeStores();
+
   return {
     props: {
       coffeeStoresData,
@@ -17,9 +21,36 @@ export async function getStaticProps(context) {
   };
 }
 
-export default function Home({ data }) {
+// -------------------------------------------------------------------
+// JSX Starts
+// -------------------------------------------------------------------
+export default function Home({ coffeeStoresData }) {
+  const [coffeeStoresbyLocation, setCoffeeStoresbyLocation] = useState([]);
+  const [coffeeStoresError, setCoffeeStoresError] = useState(null);
+  const { latLong, handleTrackLocation, locationErrorMsg } = useTrackLocation();
+
+  console.log({ latLong, locationErrorMsg });
+
+  useEffect(() => {
+    const setCoffeeStoresByLocation = async () => {
+      if (latLong) {
+        try {
+          const fetchedCoffeeStores = await fetchCoffeeStores(latLong, 18);
+          console.log({ fetchedCoffeeStores });
+          // set coffee stores
+          setCoffeeStoresbyLocation(fetchedCoffeeStores);
+        } catch (error) {
+          // set error
+          setCoffeeStoresError(error.message);
+          console.log({ error });
+        }
+      }
+    };
+    setCoffeeStoresByLocation();
+  }, [latLong]);
+
   const handleOnBannerBtnClick = () => {
-    console.log("Hi, banner button");
+    handleTrackLocation();
   };
 
   return (
@@ -35,8 +66,41 @@ export default function Home({ data }) {
           <Banner
             buttonText={"Nearby Stores"}
             handleOnClick={handleOnBannerBtnClick}
+            locationErrorMsg={locationErrorMsg}
           ></Banner>
 
+          {/* Location based coffee shops */}
+          <section>
+            {coffeeStoresbyLocation.length > 0 && (
+              <Typography
+                variant="h3"
+                marginBottom="50px"
+                component="h2"
+                sx={{ fontWeight: 700 }}
+                align="center"
+              >
+                Coffee Shops Nearby
+              </Typography>
+            )}
+            <Grid
+              container
+              spacing={3}
+              sx={{
+                marginBottom: "100px",
+              }}
+            >
+              {coffeeStoresbyLocation.map((coffeeStore) => (
+                <Card
+                  key={coffeeStore.fsq_id}
+                  name={coffeeStore.name}
+                  imgUrl={coffeeStore.imgUrl}
+                  href={`/coffee-store/${coffeeStore.fsq_id}`}
+                />
+              ))}
+            </Grid>
+          </section>
+
+          {/* New York Coffee shops */}
           <CardListsContainer coffeeStoresData={coffeeStoresData} />
         </Container>
       </main>

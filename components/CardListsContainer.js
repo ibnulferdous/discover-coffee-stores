@@ -13,7 +13,7 @@ const CardListsContainer = ({ coffeeStoresData }) => {
           sx={{ fontWeight: 700 }}
           align="center"
         >
-          Toronto Stores
+          New York Shops
         </Typography>
       )}
       <Grid
@@ -25,10 +25,10 @@ const CardListsContainer = ({ coffeeStoresData }) => {
       >
         {coffeeStoresData.map((coffeeStore) => (
           <Card
-            key={coffeeStore.id}
+            key={coffeeStore.fsq_id}
             name={coffeeStore.name}
             imgUrl={coffeeStore.imgUrl}
-            href={`/coffee-store/${coffeeStore.id}`}
+            href={`/coffee-store/${coffeeStore.fsq_id}`}
           />
         ))}
       </Grid>

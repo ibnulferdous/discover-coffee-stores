@@ -3,8 +3,10 @@ import Image from "next/image";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import useTrackLocation from "../hooks/useTrackLocation";
+import { Alert } from "@mui/material";
 
-const Banner = ({ buttonText, handleOnClick }) => {
+const Banner = ({ buttonText, handleOnClick, locationErrorMsg }) => {
   return (
     <>
       <Grid
@@ -28,9 +30,19 @@ const Banner = ({ buttonText, handleOnClick }) => {
           <Typography variant="h5" component="p" sx={{ marginBottom: "25px" }}>
             Discover you local coffee stores!
           </Typography>
-          <Button variant="contained" size="large" onClick={handleOnClick}>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={handleOnClick}
+            sx={{ marginBottom: "50px" }}
+          >
             {buttonText}
           </Button>
+          {locationErrorMsg && (
+            <Alert severity="error">
+              There is an error — {locationErrorMsg}
+            </Alert>
+          )}
         </Grid>
         <Grid item xs={12} md={6} sx={{ textAlign: "center" }}>
           <Image
