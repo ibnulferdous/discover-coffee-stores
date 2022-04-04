@@ -8,8 +8,9 @@ import Banner from "../components/Banner";
 import CardListsContainer from "../components/CardListsContainer";
 import { fetchCoffeeStores } from "../lib/coffee-stores";
 import useTrackLocation from "../hooks/useTrackLocation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Card from "../components/Card";
+import { ACTION_TYPES, StoreContext } from "./_app";
 
 export async function getStaticProps(context) {
   const coffeeStoresData = await fetchCoffeeStores();
@@ -25,9 +26,11 @@ export async function getStaticProps(context) {
 // JSX Starts
 // -------------------------------------------------------------------
 export default function Home({ coffeeStoresData }) {
-  const [coffeeStoresbyLocation, setCoffeeStoresbyLocation] = useState([]);
+  // const [coffeeStoresbyLocation, setCoffeeStoresbyLocation] = useState([]);
   const [coffeeStoresError, setCoffeeStoresError] = useState(null);
-  const { latLong, handleTrackLocation, locationErrorMsg } = useTrackLocation();
+  const { dispatch, state } = useContext(StoreContext);
+  const { coffeeStores, latLong } = state;
+  const { handleTrackLocation, locationErrorMsg } = useTrackLocation();
 
   console.log({ latLong, locationErrorMsg });
 
@@ -38,7 +41,13 @@ export default function Home({ coffeeStoresData }) {
           const fetchedCoffeeStores = await fetchCoffeeStores(latLong, 18);
           console.log({ fetchedCoffeeStores });
           // set coffee stores
-          setCoffeeStoresbyLocation(fetchedCoffeeStores);
+          // setCoffeeStoresbyLocation(fetchedCoffeeStores);
+          dispatch({
+            type: ACTION_TYPES.SET_COFFEE_STORES,
+            payload: {
+              coffeeStores: fetchedCoffeeStores,
+            },
+          });
         } catch (error) {
           // set error
           setCoffeeStoresError(error.message);
@@ -71,7 +80,7 @@ export default function Home({ coffeeStoresData }) {
 
           {/* Location based coffee shops */}
           <section>
-            {coffeeStoresbyLocation.length > 0 && (
+            {coffeeStores.length > 0 && (
               <Typography
                 variant="h3"
                 marginBottom="50px"
@@ -89,7 +98,7 @@ export default function Home({ coffeeStoresData }) {
                 marginBottom: "100px",
               }}
             >
-              {coffeeStoresbyLocation.map((coffeeStore) => (
+              {coffeeStores.map((coffeeStore) => (
                 <Card
                   key={coffeeStore.fsq_id}
                   name={coffeeStore.name}

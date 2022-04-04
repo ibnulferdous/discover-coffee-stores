@@ -19,18 +19,45 @@ import RoomIcon from "@mui/icons-material/Room";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 
 import { fetchCoffeeStores } from "../../lib/coffee-stores";
+import LoadingPage from "../../components/LoadingPage";
+import { useContext, useEffect, useState } from "react";
+import { StoreContext } from "../_app";
+import { isEmpty } from "../../utils";
 
-const coffeeStore = ({ coffeeStoreData }) => {
-  const { name, location } = coffeeStoreData;
+const CoffeeStore = (initialProps) => {
+  const router = useRouter();
+  const {
+    state: { coffeeStores },
+  } = useContext(StoreContext);
+  const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStoreData);
+  const { name, imgUrl, location } = coffeeStore;
+  console.log(coffeeStore);
+
+  const id = router.query.id;
+
+  useEffect(() => {
+    if (isEmpty(initialProps.coffeeStoreData)) {
+      if (coffeeStores.length > 0) {
+        const findCoffeeStoresById = coffeeStores.find((coffeeStore) => {
+          return coffeeStore.fsq_id.toString() === id;
+        });
+        setCoffeeStore(findCoffeeStoresById);
+      }
+    }
+  }, [id]);
 
   const handleUpVoteButton = () => {
     console.log("Upvote Clicked!");
   };
 
+  if (router.isFallback) {
+    return <LoadingPage></LoadingPage>;
+  }
+
   return (
     <div>
       <Head>
-        <title>{coffeeStoreData.name}</title>
+        <title>{name}</title>
       </Head>
 
       <Container maxWidth="lg" sx={{ paddingY: "100px" }}>
@@ -47,7 +74,7 @@ const coffeeStore = ({ coffeeStoreData }) => {
             <Box>
               <Image
                 src={
-                  coffeeStoreData.imgUrl ||
+                  imgUrl ||
                   "https://images.unsplash.com/photo-1493857671505-72967e2e2760?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
                 }
                 alt={name}
@@ -76,8 +103,8 @@ const coffeeStore = ({ coffeeStoreData }) => {
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                  primary={location.formatted_address}
-                  secondary={location.dma}
+                  primary={location?.formatted_address}
+                  secondary={location?.country}
                 />
               </ListItem>
               <ListItem>
@@ -113,7 +140,7 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: true, // false or 'blocking'
+    fallback: "blocking", // false or 'blocking'
   };
 }
 
@@ -130,4 +157,4 @@ export async function getStaticProps({ params }) {
   };
 }
 
-export default coffeeStore;
+export default CoffeeStore;
